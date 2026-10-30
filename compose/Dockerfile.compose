@@ -1,0 +1,27 @@
+# Stage 1: Build with Maven and JDK
+FROM maven:3.9-eclipse-temurin-17 AS builder
+
+WORKDIR /build
+
+COPY pom.xml .
+COPY src ./src
+
+RUN mvn -B clean package
+
+# Stage 2: Run with JRE
+FROM eclipse-temurin:17-jre
+
+RUN groupadd --system appgroup \
+    && useradd --system --uid 10001 \
+       --gid appgroup --no-create-home appuser
+
+WORKDIR /app
+
+COPY --from=builder --chown=appuser:appgroup \
+    /build/target/invoice-service-1.0-SNAPSHOT.jar app.jar
+
+USER appuser:appgroup
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "app.jar"]
