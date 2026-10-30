@@ -28,4 +28,3 @@ HEALTHCHECK --interval=5s --timeout=3s --start-period=5s --retries=3 \
     CMD ["java", "-cp", "app.jar", "com.meridian.billing.App", "--healthcheck"]
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
-BAD COMMAND
